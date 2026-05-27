@@ -1,14 +1,37 @@
+import { config } from "dotenv";
+import { PrismaPg } from "@prisma/adapter-pg";
+import pg from "pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 
-const prisma = new PrismaClient();
-const DEFAULT_USER_EMAIL = "admin@leadanalist.local";
+config({ path: ".env.local" });
+config();
+
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) throw new Error("DATABASE_URL missing");
+
+const pool = new pg.Pool({
+  connectionString,
+  ssl: { rejectUnauthorized: false },
+});
+
+const prisma = new PrismaClient({
+  adapter: new PrismaPg(pool),
+});
 
 async function main() {
+  const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  if (!email) {
+    console.warn("ADMIN_EMAIL não definido — seed de usuário ignorado.");
+    return;
+  }
+
   await prisma.user.upsert({
-    where: { email: DEFAULT_USER_EMAIL },
-    update: {},
-    create: { email: DEFAULT_USER_EMAIL, name: "Administrador" },
+    where: { email },
+    update: { name: "Administrador" },
+    create: { email, name: "Administrador" },
   });
+
+  console.log(`Usuário admin garantido: ${email}`);
 }
 
 main()

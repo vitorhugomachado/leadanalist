@@ -1,3 +1,4 @@
+import { AppProviders } from "@/components/layout/app-providers";
 import { AppShell } from "@/components/layout/app-shell";
 import { prisma } from "@/lib/prisma";
 
@@ -11,5 +12,9 @@ export default async function AppLayout({
     select: { id: true, name: true },
   });
 
-  return <AppShell batches={batches}>{children}</AppShell>;
+  return (
+    <AppProviders>
+      <AppShell batches={batches}>{children}</AppShell>
+    </AppProviders>
+  );
 }

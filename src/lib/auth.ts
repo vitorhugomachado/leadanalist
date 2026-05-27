@@ -1,12 +1,21 @@
+import { getSessionEmail } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
-import { DEFAULT_USER_EMAIL } from "@/lib/constants";
 
 export async function getCurrentUser() {
+  return requireAuthUser();
+}
+
+export async function requireAuthUser() {
+  const email = await getSessionEmail();
+  if (!email) {
+    throw new Error("UNAUTHORIZED");
+  }
+
   return prisma.user.upsert({
-    where: { email: DEFAULT_USER_EMAIL },
+    where: { email },
     update: {},
     create: {
-      email: DEFAULT_USER_EMAIL,
+      email,
       name: "Administrador",
     },
   });

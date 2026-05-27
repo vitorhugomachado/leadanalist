@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ImportButton } from "@/components/cargas/import-button";
+import { ImportButtonWithBatches } from "@/components/cargas/import-button";
 import { getBatchStats } from "@/lib/batch-queries";
 import { emptyBatchStats } from "@/lib/batch-utils";
 import { LEAD_STATUS_LABELS } from "@/lib/constants";
@@ -40,15 +40,16 @@ export default async function DashboardPage() {
             Resumo consolidado de todas as cargas. Abra uma carga para ver dados isolados.
           </p>
         </div>
-        <ImportButton />
+        <ImportButtonWithBatches />
       </div>
 
-      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <SummaryCard label="Cargas" value={batches.length} />
         <SummaryCard label="Total de leads" value={totals.total} />
         <SummaryCard label={LEAD_STATUS_LABELS.NOVO} value={totals.novo} />
         <SummaryCard label={LEAD_STATUS_LABELS.NEGOCIACAO} value={totals.negociacao} />
         <SummaryCard label={LEAD_STATUS_LABELS.VENDIDO} value={totals.vendido} />
+        <SummaryCard label={LEAD_STATUS_LABELS.PERDIDO} value={totals.perdido} />
       </div>
 
       <h2 className="mb-4 text-lg font-semibold">Resumo por carga</h2>

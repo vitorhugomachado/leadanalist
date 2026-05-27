@@ -36,7 +36,7 @@ export default async function BatchPage({ params }: Props) {
         batchId={batchId}
         batchName={batch.name}
         initialLeads={leadRecords}
-        stats={stats}
+        initialStats={stats}
       />
       <p className="mt-6 text-xs text-zinc-400">
         Importado por {batch.importedBy.name} · arquivo {batch.fileName}

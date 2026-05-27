@@ -9,44 +9,67 @@ import {
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { LeadStatus } from "@/generated/prisma/client";
+import { useToast } from "@/components/ui/toast-provider";
 import { KANBAN_COLUMNS, LEAD_STATUS_LABELS, LEAD_STATUS_COLORS } from "@/lib/constants";
 import type { LeadRecord } from "@/types/api";
 import { KanbanCard } from "./kanban-card";
 
 export function KanbanBoard({
   batchId,
-  initialLeads,
+  leads,
+  onEditLead,
+  onLeadStatusChange,
 }: {
   batchId: string;
-  initialLeads: LeadRecord[];
+  leads: LeadRecord[];
+  onEditLead: (lead: LeadRecord) => void;
+  onLeadStatusChange?: (leadId: string, newStatus: LeadStatus, previousStatus: LeadStatus) => void;
 }) {
-  const [leads, setLeads] = useState(initialLeads);
+  const { toast } = useToast();
+  const [boardLeads, setBoardLeads] = useState(leads);
   const [activeId, setActiveId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setBoardLeads(leads);
+  }, [leads]);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
   const byStatus = KANBAN_COLUMNS.reduce(
     (acc, status) => {
-      acc[status] = leads.filter((l) => l.status === status);
+      acc[status] = boardLeads.filter((l) => l.status === status);
       return acc;
     },
     {} as Record<LeadStatus, LeadRecord[]>,
   );
 
-  const activeLead = activeId ? leads.find((l) => l.id === activeId) : null;
+  const activeLead = activeId ? boardLeads.find((l) => l.id === activeId) : null;
 
   const moveLead = useCallback(
-    async (leadId: string, status: LeadStatus) => {
-      setLeads((prev) => prev.map((l) => (l.id === leadId ? { ...l, status } : l)));
-      await fetch(`/api/batches/${batchId}/leads/${leadId}`, {
+    async (leadId: string, newStatus: LeadStatus, previousStatus: LeadStatus) => {
+      setBoardLeads((prev) =>
+        prev.map((l) => (l.id === leadId ? { ...l, status: newStatus } : l)),
+      );
+
+      const res = await fetch(`/api/batches/${batchId}/leads/${leadId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ status: newStatus }),
       });
+
+      if (!res.ok) {
+        setBoardLeads((prev) =>
+          prev.map((l) => (l.id === leadId ? { ...l, status: previousStatus } : l)),
+        );
+        toast("Não foi possível mover o lead. Tente novamente.", "error");
+        return;
+      }
+
+      onLeadStatusChange?.(leadId, newStatus, previousStatus);
     },
-    [batchId],
+    [batchId, onLeadStatusChange, toast],
   );
 
   function onDragEnd(event: DragEndEvent) {
@@ -58,10 +81,10 @@ export function KanbanBoard({
     const newStatus = over.data.current?.status as LeadStatus | undefined;
     if (!newStatus) return;
 
-    const lead = leads.find((l) => l.id === leadId);
+    const lead = boardLeads.find((l) => l.id === leadId);
     if (!lead || lead.status === newStatus) return;
 
-    void moveLead(leadId, newStatus);
+    void moveLead(leadId, newStatus, lead.status);
   }
 
   return (
@@ -78,11 +101,12 @@ export function KanbanBoard({
             leads={byStatus[status]}
             label={LEAD_STATUS_LABELS[status]}
             colorClass={LEAD_STATUS_COLORS[status]}
+            onEdit={onEditLead}
           />
         ))}
       </div>
       <DragOverlay>
-        {activeLead ? <KanbanCard lead={activeLead} /> : null}
+        {activeLead ? <KanbanCard lead={activeLead} onEdit={onEditLead} /> : null}
       </DragOverlay>
     </DndContext>
   );
@@ -93,11 +117,13 @@ function KanbanColumn({
   leads,
   label,
   colorClass,
+  onEdit,
 }: {
   status: LeadStatus;
   leads: LeadRecord[];
   label: string;
   colorClass: string;
+  onEdit: (lead: LeadRecord) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `column-${status}`,
@@ -118,9 +144,13 @@ function KanbanColumn({
         <span className="text-xs opacity-80">{leads.length}</span>
       </header>
       <div className="flex flex-1 flex-col gap-2">
-        {leads.map((lead) => (
-          <KanbanCard key={lead.id} lead={lead} />
-        ))}
+        {leads.length === 0 ? (
+          <p className="py-8 text-center text-xs text-zinc-400">Nenhum lead</p>
+        ) : (
+          leads.map((lead) => (
+            <KanbanCard key={lead.id} lead={lead} onEdit={onEdit} />
+          ))
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import type { LeadStatus } from "@/generated/prisma/client";
 import { assertBatchExists } from "@/lib/batch-queries";
+import { KANBAN_COLUMNS } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
+
+const VALID_STATUS = new Set<string>(KANBAN_COLUMNS);
 
 type Params = { params: Promise<{ batchId: string; leadId: string }> };
 
@@ -31,6 +34,10 @@ export async function PATCH(request: Request, { params }: Params) {
     city?: string | null;
     notes?: string | null;
   };
+
+  if (body.status && !VALID_STATUS.has(body.status)) {
+    return NextResponse.json({ error: "Status inválido" }, { status: 400 });
+  }
 
   const lead = await prisma.lead.update({
     where: { id: leadId },

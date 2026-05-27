@@ -21,4 +21,6 @@ export const KANBAN_COLUMNS: LeadStatus[] = [
   "PERDIDO",
 ];
 
-export const DEFAULT_USER_EMAIL = "admin@leadanalist.local";
+/** Mensagem padrão ao abrir WhatsApp do lead ({nome} é substituído). */
+export const WHATSAPP_MESSAGE_TEMPLATE =
+  "Olá {nome}, tudo bem? Estou entrando em contato sobre sua solicitação.";

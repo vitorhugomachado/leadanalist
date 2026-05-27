@@ -54,13 +54,19 @@ export function leadsWhereBatch(batchId: string, extra?: { status?: LeadStatus; 
   if (extra?.status) where.status = extra.status;
   if (extra?.search?.trim()) {
     const q = extra.search.trim();
-    where.OR = [
-      { name: { contains: q } },
-      { email: { contains: q } },
-      { phone: { contains: q } },
-      { company: { contains: q } },
-      { city: { contains: q } },
+    const insensitive = { contains: q, mode: "insensitive" as const };
+    const digits = q.replace(/\D/g, "");
+    const or: NonNullable<typeof where.OR> = [
+      { name: insensitive },
+      { email: insensitive },
+      { phone: insensitive },
+      { company: insensitive },
+      { city: insensitive },
     ];
+    if (digits.length >= 4) {
+      or.push({ phone: { contains: digits } });
+    }
+    where.OR = or;
   }
   return where;
 }

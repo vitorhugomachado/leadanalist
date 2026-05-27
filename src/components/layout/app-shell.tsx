@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { LayoutDashboard, Package, Upload } from "lucide-react";
-import { ImportButton } from "@/components/cargas/import-button";
+import { ImportDialog } from "@/components/cargas/import-dialog";
 import { BatchTabList } from "@/components/layout/batch-tab-list";
+import { LogoutButton } from "@/components/layout/logout-button";
 import { NavLink } from "@/components/layout/nav-link";
 
 const nav = [
@@ -36,13 +37,16 @@ export function AppShell({
         </nav>
 
         <div className="px-3 pb-3">
-          <ImportButton className="w-full justify-center" />
+          <ImportDialog batches={batches} className="w-full justify-center" />
         </div>
 
         <BatchTabList batches={batches} />
 
-        <div className="mt-auto border-t border-zinc-200 p-4 text-xs text-zinc-400">
-          <Upload className="mb-1 inline h-3 w-3" /> Importe planilhas .xlsx / .csv
+        <div className="mt-auto space-y-2 border-t border-zinc-200 p-3">
+          <LogoutButton />
+          <p className="px-3 text-xs text-zinc-400">
+            <Upload className="mb-1 inline h-3 w-3" /> .xlsx / .csv
+          </p>
         </div>
       </aside>
 

@@ -1,5 +1,5 @@
 import { BatchCard } from "@/components/cargas/batch-card";
-import { ImportButton } from "@/components/cargas/import-button";
+import { ImportButtonWithBatches } from "@/components/cargas/import-button";
 import { getBatchStats } from "@/lib/batch-queries";
 import { prisma } from "@/lib/prisma";
 import type { BatchWithStats } from "@/types/api";
@@ -28,7 +28,7 @@ export default async function CargasPage() {
             entre cargas — clique em uma carga para abrir o Kanban exclusivo.
           </p>
         </div>
-        <ImportButton />
+        <ImportButtonWithBatches />
       </div>
 
       {withStats.length === 0 ? (
