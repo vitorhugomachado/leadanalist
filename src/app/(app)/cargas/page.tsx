@@ -4,6 +4,8 @@ import { getBatchStats } from "@/lib/batch-queries";
 import { prisma } from "@/lib/prisma";
 import type { BatchWithStats } from "@/types/api";
 
+export const dynamic = "force-dynamic";
+
 export default async function CargasPage() {
   const batches = await prisma.leadBatch.findMany({
     orderBy: { importedAt: "desc" },

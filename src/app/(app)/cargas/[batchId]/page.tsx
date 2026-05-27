@@ -6,6 +6,8 @@ import type { LeadRecord } from "@/types/api";
 
 type Props = { params: Promise<{ batchId: string }> };
 
+export const dynamic = "force-dynamic";
+
 export default async function BatchPage({ params }: Props) {
   const { batchId } = await params;
 

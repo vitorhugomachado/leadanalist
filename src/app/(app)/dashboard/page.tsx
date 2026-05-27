@@ -7,6 +7,8 @@ import { emptyBatchStats } from "@/lib/batch-utils";
 import { LEAD_STATUS_LABELS } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const batches = await prisma.leadBatch.findMany({
     orderBy: { importedAt: "desc" },

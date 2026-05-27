@@ -3,6 +3,8 @@ import { getAdminEmail, verifyAdminPassword } from "@/lib/credentials";
 import { createSessionToken, setSessionCookie } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as { email?: string; password?: string };

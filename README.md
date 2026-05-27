@@ -27,7 +27,7 @@ npx tsx scripts/hash-password.ts "sua-senha"
 ## Deploy na Vercel
 
 1. Importe o repositório no [Vercel](https://vercel.com).
-2. Adicione as variáveis de ambiente:
+2. Adicione as variáveis de ambiente em **Production** e **Preview** (Settings → Environment Variables):
 
 | Variável | Descrição |
 |----------|-----------|
@@ -36,6 +36,8 @@ npx tsx scripts/hash-password.ts "sua-senha"
 | `AUTH_SECRET` | Segredo JWT (32+ caracteres) |
 | `ADMIN_EMAIL` | E-mail do administrador |
 | `ADMIN_PASSWORD_HASH` | Hash bcrypt da senha |
+
+Sem `DATABASE_URL`, o deploy compila, mas a aplicação falha ao acessar o banco em runtime.
 
 3. Build: `prisma generate && next build` (já configurado em `vercel.json`).
 4. Se o banco estiver vazio, rode localmente: `npm run db:push` apontando para o Supabase.

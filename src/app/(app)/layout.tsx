@@ -2,6 +2,8 @@ import { AppProviders } from "@/components/layout/app-providers";
 import { AppShell } from "@/components/layout/app-shell";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function AppLayout({
   children,
 }: {
