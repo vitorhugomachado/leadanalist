@@ -26,7 +26,11 @@ function LoginForm() {
     setLoading(false);
 
     if (!res.ok) {
-      setError(data.error ?? "Não foi possível entrar.");
+      const parts = [data.error ?? "Não foi possível entrar."];
+      if (Array.isArray(data.missing) && data.missing.length > 0) {
+        parts.push(`Variáveis: ${data.missing.join(", ")}`);
+      }
+      setError(parts.join(" "));
       return;
     }
 

@@ -39,6 +39,14 @@ npx tsx scripts/hash-password.ts "sua-senha"
 
 Sem `DATABASE_URL`, o deploy compila, mas a aplicação falha ao acessar o banco em runtime.
 
+**Hash bcrypt na Vercel:** cole `ADMIN_PASSWORD_HASH` entre aspas ou escape cada `$` como `\$`. O hash deve começar com `$2b$12$...`. Gere com:
+
+```bash
+npm run auth:hash -- "sua-senha"
+```
+
+Teste após deploy: `https://seu-app.vercel.app/api/auth/config` — deve retornar `{ "ok": true }`.
+
 3. Build: `prisma generate && next build` (já configurado em `vercel.json`).
 4. Se o banco estiver vazio, rode localmente: `npm run db:push` apontando para o Supabase.
 

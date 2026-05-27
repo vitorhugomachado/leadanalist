@@ -4,12 +4,16 @@ import { SignJWT, jwtVerify } from "jose";
 const COOKIE_NAME = "leadanalist_session";
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 dias
 
-function getSecret() {
-  const secret = process.env.AUTH_SECRET;
+function readAuthSecret(): string {
+  const secret = process.env.AUTH_SECRET?.trim();
   if (!secret || secret.length < 32) {
-    throw new Error("AUTH_SECRET deve ter pelo menos 32 caracteres.");
+    throw new Error("AUTH_SECRET");
   }
-  return new TextEncoder().encode(secret);
+  return secret;
+}
+
+function getSecretKey() {
+  return new TextEncoder().encode(readAuthSecret());
 }
 
 export async function createSessionToken(email: string): Promise<string> {
@@ -17,12 +21,12 @@ export async function createSessionToken(email: string): Promise<string> {
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(`${MAX_AGE_SECONDS}s`)
-    .sign(getSecret());
+    .sign(getSecretKey());
 }
 
 export async function verifySessionToken(token: string): Promise<string | null> {
   try {
-    const { payload } = await jwtVerify(token, getSecret());
+    const { payload } = await jwtVerify(token, getSecretKey());
     const email = payload.email;
     return typeof email === "string" ? email : null;
   } catch {
