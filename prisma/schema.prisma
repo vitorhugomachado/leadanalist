@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String      @id @default(cuid())
+  name      String
+  email     String      @unique
+  createdAt DateTime    @default(now())
+  batches   LeadBatch[]
+}
+
+/// Carga de leads — uma importação de planilha
+model LeadBatch {
+  id           String   @id @default(cuid())
+  name         String
+  fileName     String
+  importedAt   DateTime @default(now())
+  importedById String
+  importedBy   User     @relation(fields: [importedById], references: [id])
+  leads        Lead[]
+
+  @@map("lead_batches")
+}
+
+enum LeadStatus {
+  NOVO
+  NEGOCIACAO
+  VENDIDO
+  PERDIDO
+}
+
+model Lead {
+  id        String     @id @default(cuid())
+  batchId   String
+  batch     LeadBatch  @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  name      String
+  email     String?
+  phone     String?
+  company   String?
+  city      String?
+  notes     String?
+  status    LeadStatus @default(NOVO)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([batchId])
+  @@index([batchId, status])
+}
