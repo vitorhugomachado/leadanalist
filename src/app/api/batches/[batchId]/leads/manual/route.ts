@@ -39,6 +39,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ bat
     return NextResponse.json({ lead });
   } catch (error) {
     console.error("Erro ao criar lead manual:", error);
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ error: "Sessão expirada. Recarregue a página ou faça login novamente." }, { status: 401 });
+    }
     return NextResponse.json(
       { error: "Falha ao criar lead manual" },
       { status: 500 }

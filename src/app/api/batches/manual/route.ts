@@ -26,6 +26,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ batch });
   } catch (error) {
     console.error("Erro ao criar carga manual:", error);
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return NextResponse.json({ error: "Sessão expirada. Recarregue a página ou faça login novamente." }, { status: 401 });
+    }
     return NextResponse.json(
       { error: "Falha ao criar carga manual" },
       { status: 500 }
