@@ -23,6 +23,10 @@ export async function GET() {
     (acc, b) => ({
       total: acc.total + b.stats.total,
       novo: acc.novo + b.stats.novo,
+      contatoIniciado: acc.contatoIniciado + b.stats.contatoIniciado,
+      semResposta: acc.semResposta + b.stats.semResposta,
+      interessado: acc.interessado + b.stats.interessado,
+      propostaEnviada: acc.propostaEnviada + b.stats.propostaEnviada,
       negociacao: acc.negociacao + b.stats.negociacao,
       vendido: acc.vendido + b.stats.vendido,
       perdido: acc.perdido + b.stats.perdido,
