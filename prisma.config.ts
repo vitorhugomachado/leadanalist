@@ -10,6 +10,11 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DIRECT_URL"] ?? process.env["DATABASE_URL"],
+    // Vercel Postgres: POSTGRES_URL_NON_POOLING (conexão direta, sem pgbouncer)
+    // Fallback: DIRECT_URL (Supabase) → DATABASE_URL (genérico)
+    url:
+      process.env["POSTGRES_URL_NON_POOLING"] ??
+      process.env["DIRECT_URL"] ??
+      process.env["DATABASE_URL"],
   },
 });

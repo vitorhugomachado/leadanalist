@@ -59,7 +59,9 @@ export function validateAuthEnv(): { ok: true } | { ok: false; missing: string[]
   const secret = readEnv("AUTH_SECRET");
   if (!secret || secret.length < 32) missing.push("AUTH_SECRET (mín. 32 caracteres)");
 
-  if (!readEnv("DATABASE_URL")) missing.push("DATABASE_URL");
+  // Aceita POSTGRES_PRISMA_URL (Vercel Postgres) ou DATABASE_URL (local/Supabase)
+  if (!readEnv("POSTGRES_PRISMA_URL") && !readEnv("DATABASE_URL"))
+    missing.push("POSTGRES_PRISMA_URL (Vercel) ou DATABASE_URL (local)");
 
   if (missing.length > 0) return { ok: false, missing };
   return { ok: true };
