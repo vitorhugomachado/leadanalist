@@ -8,11 +8,15 @@ export function batchNameFromFileName(fileName: string): string {
 export type BatchStats = {
   total: number;
   novo: number;
+  contatoIniciado: number;
+  semResposta: number;
+  interessado: number;
+  propostaEnviada: number;
   negociacao: number;
   vendido: number;
   perdido: number;
 };
 
 export function emptyBatchStats(): BatchStats {
-  return { total: 0, novo: 0, negociacao: 0, vendido: 0, perdido: 0 };
+  return { total: 0, novo: 0, contatoIniciado: 0, semResposta: 0, interessado: 0, propostaEnviada: 0, negociacao: 0, vendido: 0, perdido: 0 };
 }

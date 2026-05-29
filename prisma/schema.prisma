@@ -7,6 +7,11 @@ datasource db {
   provider = "postgresql"
 }
 
+enum BatchSource {
+  PLANILHA
+  APIFY
+}
+
 model User {
   id        String      @id @default(cuid())
   name      String
@@ -15,21 +20,34 @@ model User {
   batches   LeadBatch[]
 }
 
-/// Carga de leads — uma importação de planilha
+/// Carga de leads — uma importação de planilha ou scraping Apify
 model LeadBatch {
-  id           String   @id @default(cuid())
+  id           String      @id @default(cuid())
   name         String
   fileName     String
-  importedAt   DateTime @default(now())
+  importedAt   DateTime    @default(now())
   importedById String
-  importedBy   User     @relation(fields: [importedById], references: [id])
+  importedBy   User        @relation(fields: [importedById], references: [id])
   leads        Lead[]
+  // Apify fields
+  source       BatchSource @default(PLANILHA)
+  city         String?
+  state        String?
+  neighborhood String?
+  keyword      String?
+  apifyRunId   String?
+  apifyStatus  String?
+  totalImported Int        @default(0)
 
   @@map("lead_batches")
 }
 
 enum LeadStatus {
   NOVO
+  CONTATO_INICIADO
+  SEM_RESPOSTA
+  INTERESSADO
+  PROPOSTA_ENVIADA
   NEGOCIACAO
   VENDIDO
   PERDIDO
@@ -48,6 +66,18 @@ model Lead {
   status    LeadStatus @default(NOVO)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  // Apify fields
+  source        BatchSource @default(PLANILHA)
+  googleMapsUrl String?
+  latitude      Float?
+  longitude     Float?
+  rating        Float?
+  reviewsCount  Int?
+  website       String?
+  category      String?
+  address       String?
+  neighborhood  String?
+  zipCode       String?
 
   @@index([batchId])
   @@index([batchId, status])

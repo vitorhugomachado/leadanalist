@@ -26,6 +26,10 @@ export default async function DashboardPage() {
     (acc, b) => ({
       total: acc.total + b.stats.total,
       novo: acc.novo + b.stats.novo,
+      contatoIniciado: acc.contatoIniciado + b.stats.contatoIniciado,
+      semResposta: acc.semResposta + b.stats.semResposta,
+      interessado: acc.interessado + b.stats.interessado,
+      propostaEnviada: acc.propostaEnviada + b.stats.propostaEnviada,
       negociacao: acc.negociacao + b.stats.negociacao,
       vendido: acc.vendido + b.stats.vendido,
       perdido: acc.perdido + b.stats.perdido,
@@ -45,10 +49,14 @@ export default async function DashboardPage() {
         <ImportButtonWithBatches />
       </div>
 
-      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
         <SummaryCard label="Cargas" value={batches.length} />
         <SummaryCard label="Total de leads" value={totals.total} />
         <SummaryCard label={LEAD_STATUS_LABELS.NOVO} value={totals.novo} />
+        <SummaryCard label={LEAD_STATUS_LABELS.CONTATO_INICIADO} value={totals.contatoIniciado} />
+        <SummaryCard label={LEAD_STATUS_LABELS.SEM_RESPOSTA} value={totals.semResposta} />
+        <SummaryCard label={LEAD_STATUS_LABELS.INTERESSADO} value={totals.interessado} />
+        <SummaryCard label={LEAD_STATUS_LABELS.PROPOSTA_ENVIADA} value={totals.propostaEnviada} />
         <SummaryCard label={LEAD_STATUS_LABELS.NEGOCIACAO} value={totals.negociacao} />
         <SummaryCard label={LEAD_STATUS_LABELS.VENDIDO} value={totals.vendido} />
         <SummaryCard label={LEAD_STATUS_LABELS.PERDIDO} value={totals.perdido} />
@@ -63,8 +71,8 @@ export default async function DashboardPage() {
           </p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white">
-          <table className="w-full text-left text-sm">
+        <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white">
+          <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-zinc-50 text-xs uppercase text-zinc-500">
               <tr>
                 <th className="px-4 py-3">Carga</th>
@@ -72,6 +80,10 @@ export default async function DashboardPage() {
                 <th className="px-4 py-3">Responsável</th>
                 <th className="px-4 py-3 text-right">Total</th>
                 <th className="px-4 py-3 text-right">Novos</th>
+                <th className="px-4 py-3 text-right">Contato</th>
+                <th className="px-4 py-3 text-right">S/ Resp.</th>
+                <th className="px-4 py-3 text-right">Interess.</th>
+                <th className="px-4 py-3 text-right">Proposta</th>
                 <th className="px-4 py-3 text-right">Negociação</th>
                 <th className="px-4 py-3 text-right">Vendidos</th>
                 <th className="px-4 py-3 text-right">Perdidos</th>
@@ -91,6 +103,10 @@ export default async function DashboardPage() {
                   <td className="px-4 py-3 text-zinc-600">{b.importedBy.name}</td>
                   <td className="px-4 py-3 text-right font-medium">{b.stats.total}</td>
                   <td className="px-4 py-3 text-right">{b.stats.novo}</td>
+                  <td className="px-4 py-3 text-right">{b.stats.contatoIniciado}</td>
+                  <td className="px-4 py-3 text-right">{b.stats.semResposta}</td>
+                  <td className="px-4 py-3 text-right">{b.stats.interessado}</td>
+                  <td className="px-4 py-3 text-right">{b.stats.propostaEnviada}</td>
                   <td className="px-4 py-3 text-right">{b.stats.negociacao}</td>
                   <td className="px-4 py-3 text-right">{b.stats.vendido}</td>
                   <td className="px-4 py-3 text-right">{b.stats.perdido}</td>

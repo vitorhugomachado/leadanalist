@@ -14,18 +14,14 @@ export async function getBatchStats(batchId: string): Promise<BatchStats> {
     const n = g._count._all;
     stats.total += n;
     switch (g.status as LeadStatus) {
-      case "NOVO":
-        stats.novo = n;
-        break;
-      case "NEGOCIACAO":
-        stats.negociacao = n;
-        break;
-      case "VENDIDO":
-        stats.vendido = n;
-        break;
-      case "PERDIDO":
-        stats.perdido = n;
-        break;
+      case "NOVO": stats.novo = n; break;
+      case "CONTATO_INICIADO": stats.contatoIniciado = n; break;
+      case "SEM_RESPOSTA": stats.semResposta = n; break;
+      case "INTERESSADO": stats.interessado = n; break;
+      case "PROPOSTA_ENVIADA": stats.propostaEnviada = n; break;
+      case "NEGOCIACAO": stats.negociacao = n; break;
+      case "VENDIDO": stats.vendido = n; break;
+      case "PERDIDO": stats.perdido = n; break;
     }
   }
   return stats;

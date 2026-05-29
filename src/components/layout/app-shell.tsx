@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LayoutDashboard, Package, Upload } from "lucide-react";
+import { LayoutDashboard, Package, Upload, MapPin } from "lucide-react";
 import { ImportDialog } from "@/components/cargas/import-dialog";
 import { BatchTabList } from "@/components/layout/batch-tab-list";
 import { LogoutButton } from "@/components/layout/logout-button";
@@ -8,6 +8,7 @@ import { NavLink } from "@/components/layout/nav-link";
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/cargas", label: "Cargas de Leads", icon: Package },
+  { href: "/apify", label: "Leads Apify", icon: MapPin },
 ];
 
 export function AppShell({

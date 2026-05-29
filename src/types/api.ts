@@ -1,4 +1,4 @@
-import type { LeadStatus } from "@/generated/prisma/client";
+import type { LeadStatus, BatchSource } from "@/generated/prisma/client";
 import type { BatchStats } from "@/lib/batch-utils";
 
 export type UserSummary = { id: string; name: string; email: string };
@@ -11,6 +11,12 @@ export type BatchWithStats = {
   importedById: string;
   importedBy: UserSummary;
   stats: BatchStats;
+  source?: BatchSource;
+  city?: string | null;
+  state?: string | null;
+  keyword?: string | null;
+  apifyStatus?: string | null;
+  totalImported?: number;
 };
 
 export type LeadRecord = {
@@ -25,6 +31,18 @@ export type LeadRecord = {
   status: LeadStatus;
   createdAt: string;
   updatedAt: string;
+  // Apify fields
+  source?: BatchSource;
+  googleMapsUrl?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  rating?: number | null;
+  reviewsCount?: number | null;
+  website?: string | null;
+  category?: string | null;
+  address?: string | null;
+  neighborhood?: string | null;
+  zipCode?: string | null;
 };
 
 export type DashboardData = {
