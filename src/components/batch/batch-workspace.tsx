@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import type { LeadStatus } from "@/generated/prisma/client";
 import { BatchCharts } from "@/components/batch/batch-charts";
+import { CreateManualLeadDialog } from "@/components/batch/create-manual-lead-dialog";
 import { ExportBatchButton } from "@/components/batch/export-batch-button";
 import { KanbanBoard } from "@/components/batch/kanban-board";
 import { LeadFilters } from "@/components/batch/lead-filters";
@@ -142,6 +143,7 @@ export function BatchWorkspace({
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <CreateManualLeadDialog batchId={batchId} onCreated={() => void refreshFromServer()} />
           <ExportBatchButton batchId={batchId} />
           <DeleteBatchButton
             batchId={batchId}
