@@ -261,14 +261,19 @@ export function ApifyPageClient({ initialBatches }: { initialBatches: ApifyBatch
             {/* Palavra-chave */}
             <div>
               <label className="block text-sm font-medium mb-1" style={{ color: "#B0B0B0" }}>Palavra-chave *</label>
-              <select
+              <input
+                list="keywords-list"
+                type="text"
+                placeholder="Ex: loja de roupas"
                 value={form.keyword}
                 onChange={(e) => setForm((f) => ({ ...f, keyword: e.target.value }))}
-                className="w-full rounded-lg border px-3 py-2 text-sm text-white focus:outline-none"
+                required
+                className="w-full rounded-lg border px-3 py-2 text-sm text-white focus:outline-none placeholder-gray-600"
                 style={{ background: "#1E1E1E", borderColor: "#3A3A3A", outlineColor: "#E67E22" }}
-              >
-                {KEYWORDS.map((k) => <option key={k} value={k}>{k}</option>)}
-              </select>
+              />
+              <datalist id="keywords-list">
+                {KEYWORDS.map((k) => <option key={k} value={k} />)}
+              </datalist>
             </div>
 
             {/* Quantidade */}
